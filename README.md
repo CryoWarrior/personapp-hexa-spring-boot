@@ -1,7 +1,11 @@
-# PersonApp Hexagonal – Spring Boot (Docker Ready)
+# PersonApp Hexagonal – Spring Boot
 
 Aplicación multi-módulo que implementa arquitectura hexagonal (puertos y adaptadores) para gestionar personas.  
-Incluye adaptador REST, CLI, y dos salidas hacia MariaDB y MongoDB. Todo el stack puede levantarse en contenedores.
+Incluye adaptador REST, CLI, y dos salidas hacia MariaDB y MongoDB.
+
+## Autores
+- Diego Alejandro Jara Rojas
+- Laura Isabel Blanco
 
 ## Estructura
 
@@ -42,6 +46,28 @@ Servicios:
 - MariaDB: `localhost:3307` (`persona_db` / `persona_db`)
 - MongoDB: `localhost:27017` (usuario `persona_db` / `persona_db`, auth DB `admin`)
 
+### Endpoints REST disponibles
+
+| Método | Ruta                         | Descripción                                                    |
+| ------ | ---------------------------- | -------------------------------------------------------------- |
+| GET    | `/api/v1/persona/{database}` | Lista personas desde `MARIA` o `MONGO` (parámetro en la ruta). |
+| POST   | `/api/v1/persona`            | Crea una persona en la base indicada en el body (`database`).  |
+
+Ejemplos:
+
+```bash
+# Listar desde MariaDB
+curl http://localhost:3000/api/v1/persona/maria
+
+# Listar desde MongoDB
+curl http://localhost:3000/api/v1/persona/mongo
+
+# Crear una persona en MariaDB
+curl -X POST http://localhost:3000/api/v1/persona \
+  -H "Content-Type: application/json" \
+  -d '{"dni":"1001","firstName":"Juan","lastName":"Perez","age":"30","sex":"MALE","database":"MARIA"}'
+```
+
 ### CLI
 
 El CLI es interactivo; ejecútalo bajo demanda:
@@ -60,20 +86,4 @@ Cuando termine (opción 0), el contenedor se elimina automáticamente.
 Los scripts se aplican automáticamente al levantar los contenedores (gracias a los volúmenes montados en `docker-compose.yml`).  
 Para resembrar datos, usa `docker compose down -v` y levanta de nuevo.
 
-## Ejecución local (opcional)
 
-1. Instala MariaDB (puerto 3307) y MongoDB (puerto 27017).
-2. Ejecuta los scripts del directorio `scripts/`.
-3. Compila con Maven:
-   ```bash
-   mvn clean package
-   ```
-4. Ejecuta:
-   - REST: `mvn -pl rest-input-adapter spring-boot:run`
-   - CLI: `mvn -pl cli-input-adapter spring-boot:run`
-
-## Notas
-
-- El proyecto usa Lombok; habilítalo en tu IDE.
-- Hay dos aplicaciones Spring Boot independientes (REST y CLI).
-- Si haces fork para trabajar tu laboratorio, evita modificar el repo base.
