@@ -95,4 +95,57 @@ public class TelefonoInputAdapterCli {
 		System.out.println("Total de teléfonos: " + count);
 		return count;
 	}
+
+	public void crearTelefono(String numero, String operador, Integer duenioId) {
+		try {
+			// Crear un teléfono básico sin validar persona existente para CLI
+			co.edu.javeriana.as.personapp.domain.Phone phone = new co.edu.javeriana.as.personapp.domain.Phone();
+			phone.setNumber(numero);
+			phone.setCompany(operador);
+			
+			// Crear persona básica para referencia
+			co.edu.javeriana.as.personapp.domain.Person owner = new co.edu.javeriana.as.personapp.domain.Person();
+			owner.setIdentification(duenioId);
+			phone.setOwner(owner);
+			
+			co.edu.javeriana.as.personapp.domain.Phone created = phoneInputPort.create(phone);
+			System.out.println("Teléfono creado: " + telefonoMapperCli.fromDomainToAdapterCli(created));
+		} catch (Exception e) {
+			log.warn(e.getMessage());
+			System.out.println("No fue posible crear el teléfono: " + e.getMessage());
+		}
+	}
+
+	public void editarTelefono(String numero, String operador, Integer duenioId) {
+		try {
+			co.edu.javeriana.as.personapp.domain.Phone phone = new co.edu.javeriana.as.personapp.domain.Phone();
+			phone.setNumber(numero);
+			phone.setCompany(operador);
+			
+			// Crear persona básica para referencia
+			co.edu.javeriana.as.personapp.domain.Person owner = new co.edu.javeriana.as.personapp.domain.Person();
+			owner.setIdentification(duenioId);
+			phone.setOwner(owner);
+			
+			co.edu.javeriana.as.personapp.domain.Phone updated = phoneInputPort.edit(numero, phone);
+			System.out.println("Teléfono actualizado: " + telefonoMapperCli.fromDomainToAdapterCli(updated));
+		} catch (NoExistException e) {
+			log.warn(e.getMessage());
+			System.out.println("No fue posible actualizar el teléfono: " + e.getMessage());
+		}
+	}
+
+	public void eliminarTelefono(String numero) {
+		try {
+			boolean deleted = phoneInputPort.drop(numero);
+			if (deleted) {
+				System.out.println("Teléfono eliminado correctamente.");
+			} else {
+				System.out.println("No fue posible eliminar el teléfono.");
+			}
+		} catch (NoExistException e) {
+			log.warn(e.getMessage());
+			System.out.println("No fue posible eliminar el teléfono: " + e.getMessage());
+		}
+	}
 }

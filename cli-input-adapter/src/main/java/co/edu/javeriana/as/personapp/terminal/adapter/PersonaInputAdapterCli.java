@@ -1,5 +1,6 @@
 package co.edu.javeriana.as.personapp.terminal.adapter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,7 +12,10 @@ import co.edu.javeriana.as.personapp.application.port.out.PersonOutputPort;
 import co.edu.javeriana.as.personapp.application.usecase.PersonUseCase;
 import co.edu.javeriana.as.personapp.common.annotations.Adapter;
 import co.edu.javeriana.as.personapp.common.exceptions.InvalidOptionException;
+import co.edu.javeriana.as.personapp.common.exceptions.NoExistException;
 import co.edu.javeriana.as.personapp.common.setup.DatabaseOption;
+import co.edu.javeriana.as.personapp.domain.Gender;
+import co.edu.javeriana.as.personapp.domain.Person;
 import co.edu.javeriana.as.personapp.terminal.mapper.PersonaMapperCli;
 import co.edu.javeriana.as.personapp.terminal.model.PersonaModelCli;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +58,74 @@ public class PersonaInputAdapterCli {
 	    personInputPort.findAll().stream()
 	        .map(personaMapperCli::fromDomainToAdapterCli)
 	        .forEach(System.out::println);
+	}
+
+	public void buscarPorId(Integer id) {
+		try {
+			Person person = personInputPort.findOne(id);
+			System.out.println(personaMapperCli.fromDomainToAdapterCli(person));
+		} catch (NoExistException e) {
+			log.warn(e.getMessage());
+			System.out.println("Persona no encontrada.");
+		}
+	}
+
+	public void crearPersona(Integer cc, String nombre, String apellido, String genero, Integer edad) {
+		Person person = buildPerson(cc, nombre, apellido, genero, edad);
+		Person created = personInputPort.create(person);
+		PersonaModelCli personaModelCli = personaMapperCli.fromDomainToAdapterCli(created);
+		System.out.println("Persona creada: " + personaModelCli);
+	}
+
+	public void editarPersona(Integer cc, String nombre, String apellido, String genero, Integer edad) {
+		try {
+			Person person = buildPerson(cc, nombre, apellido, genero, edad);
+			Person updated = personInputPort.edit(cc, person);
+			System.out.println("Persona actualizada: " + personaMapperCli.fromDomainToAdapterCli(updated));
+		} catch (NoExistException e) {
+			log.warn(e.getMessage());
+			System.out.println("No fue posible actualizar la persona: " + e.getMessage());
+		}
+	}
+
+	public void eliminarPersona(Integer cc) {
+		try {
+			boolean deleted = personInputPort.drop(cc);
+			if (deleted) {
+				System.out.println("Persona eliminada correctamente.");
+			} else {
+				System.out.println("No fue posible eliminar la persona.");
+			}
+		} catch (NoExistException e) {
+			log.warn(e.getMessage());
+			System.out.println("No fue posible eliminar la persona: " + e.getMessage());
+		}
+	}
+
+	public void contarPersonas() {
+		Integer count = personInputPort.count();
+		System.out.println("Total de personas: " + count);
+	}
+
+	private Person buildPerson(Integer cc, String nombre, String apellido, String genero, Integer edad) {
+		Person person = new Person();
+		person.setIdentification(cc);
+		person.setFirstName(nombre);
+		person.setLastName(apellido);
+		person.setGender(parseGender(genero));
+		person.setAge(edad);
+		person.setPhoneNumbers(new ArrayList<>());
+		person.setStudies(new ArrayList<>());
+		return person;
+	}
+
+	private Gender parseGender(String genero) {
+		if (genero == null) return Gender.OTHER;
+		switch (genero.toUpperCase()) {
+			case "M": return Gender.MALE;
+			case "F": return Gender.FEMALE;
+			default: return Gender.OTHER;
+		}
 	}
 
 }

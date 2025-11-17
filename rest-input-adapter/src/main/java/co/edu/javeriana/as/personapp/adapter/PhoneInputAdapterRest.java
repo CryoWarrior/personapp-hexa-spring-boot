@@ -142,4 +142,54 @@ public class PhoneInputAdapterRest {
 			return new ArrayList<PhoneResponse>();
 		}
 	}
+
+	public PhoneResponse buscarTelefono(String database, String number) {
+		try {
+			String selectedDb = setPhoneOutputPortInjection(database);
+			Phone phone = phoneInputPort.findOne(number);
+			return mapPhoneResponse(phone, selectedDb);
+		} catch (InvalidOptionException | NoExistException e) {
+			log.warn(e.getMessage());
+		}
+		return null;
+	}
+
+	public PhoneResponse editarTelefono(String database, String number, PhoneRequest request) {
+		try {
+			String selectedDb = setPhoneOutputPortInjection(database);
+			
+			// Buscar la persona owner
+			Integer ownerId = Integer.parseInt(request.getOwnerId());
+			Person owner = personInputPort.findOne(ownerId);
+			
+			if (owner == null) {
+				log.warn("Person with ID {} not found", ownerId);
+				return null;
+			}
+			
+			Phone phone = phoneMapperRest.fromAdapterToDomain(request, owner);
+			Phone updatedPhone = phoneInputPort.edit(number, phone);
+			return mapPhoneResponse(updatedPhone, selectedDb);
+		} catch (InvalidOptionException | NumberFormatException | NoExistException e) {
+			log.warn(e.getMessage());
+		}
+		return null;
+	}
+
+	public Boolean eliminarTelefono(String database, String number) {
+		try {
+			setPhoneOutputPortInjection(database);
+			return phoneInputPort.drop(number);
+		} catch (InvalidOptionException | NoExistException e) {
+			log.warn(e.getMessage());
+			return false;
+		}
+	}
+
+	private PhoneResponse mapPhoneResponse(Phone phone, String selectedDb) {
+		if (selectedDb.equalsIgnoreCase(DatabaseOption.MARIA.toString())) {
+			return phoneMapperRest.fromDomainToAdapterRestMaria(phone);
+		}
+		return phoneMapperRest.fromDomainToAdapterRestMongo(phone);
+	}
 }
