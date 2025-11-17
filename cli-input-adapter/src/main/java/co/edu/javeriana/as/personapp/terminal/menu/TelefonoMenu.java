@@ -17,9 +17,12 @@ public class TelefonoMenu {
 	private static final int OPCION_REGRESAR_MOTOR_PERSISTENCIA = 0;
 	private static final int OPCION_VER_TODO = 1;
 	private static final int OPCION_BUSCAR_POR_NUMERO = 2;
-	private static final int OPCION_TELEFONOS_POR_PERSONA = 3;
-	private static final int OPCION_TELEFONOS_POR_OPERADOR = 4;
-	private static final int OPCION_CONTAR_TELEFONOS = 5;
+	private static final int OPCION_CREAR = 3;
+	private static final int OPCION_EDITAR = 4;
+	private static final int OPCION_ELIMINAR = 5;
+	private static final int OPCION_TELEFONOS_POR_PERSONA = 6;
+	private static final int OPCION_TELEFONOS_POR_OPERADOR = 7;
+	private static final int OPCION_CONTAR_TELEFONOS = 8;
 
 	public void iniciarMenu(TelefonoInputAdapterCli telefonoInputAdapterCli, Scanner keyboard) {
 		boolean isValid = false;
@@ -64,6 +67,15 @@ public class TelefonoMenu {
 				case OPCION_BUSCAR_POR_NUMERO:
 					buscarPorNumero(telefonoInputAdapterCli, keyboard);
 					break;
+				case OPCION_CREAR:
+					crearTelefono(telefonoInputAdapterCli, keyboard);
+					break;
+				case OPCION_EDITAR:
+					editarTelefono(telefonoInputAdapterCli, keyboard);
+					break;
+				case OPCION_ELIMINAR:
+					eliminarTelefono(telefonoInputAdapterCli, keyboard);
+					break;
 				case OPCION_TELEFONOS_POR_PERSONA:
 					telefonosPorPersona(telefonoInputAdapterCli, keyboard);
 					break;
@@ -106,10 +118,57 @@ public class TelefonoMenu {
 		telefonoInputAdapterCli.telefonosPorOperador(operador);
 	}
 
+	private void crearTelefono(TelefonoInputAdapterCli telefonoInputAdapterCli, Scanner keyboard) {
+		try {
+			keyboard.nextLine(); // Limpiar buffer
+			System.out.print("Ingrese el número de teléfono: ");
+			String numero = keyboard.nextLine();
+			System.out.print("Ingrese el operador: ");
+			String operador = keyboard.nextLine();
+			System.out.print("Ingrese el ID del dueño: ");
+			Integer duenioId = keyboard.nextInt();
+			telefonoInputAdapterCli.crearTelefono(numero, operador, duenioId);
+		} catch (InputMismatchException e) {
+			log.warn("Debe ingresar datos válidos.");
+			keyboard.nextLine();
+		}
+	}
+
+	private void editarTelefono(TelefonoInputAdapterCli telefonoInputAdapterCli, Scanner keyboard) {
+		try {
+			keyboard.nextLine(); // Limpiar buffer
+			System.out.print("Ingrese el número de teléfono a editar: ");
+			String numero = keyboard.nextLine();
+			System.out.print("Ingrese el nuevo operador: ");
+			String operador = keyboard.nextLine();
+			System.out.print("Ingrese el nuevo ID del dueño: ");
+			Integer duenioId = keyboard.nextInt();
+			telefonoInputAdapterCli.editarTelefono(numero, operador, duenioId);
+		} catch (InputMismatchException e) {
+			log.warn("Debe ingresar datos válidos.");
+			keyboard.nextLine();
+		}
+	}
+
+	private void eliminarTelefono(TelefonoInputAdapterCli telefonoInputAdapterCli, Scanner keyboard) {
+		try {
+			keyboard.nextLine(); // Limpiar buffer
+			System.out.print("Ingrese el número de teléfono a eliminar: ");
+			String numero = keyboard.nextLine();
+			telefonoInputAdapterCli.eliminarTelefono(numero);
+		} catch (Exception e) {
+			log.warn("Error al eliminar teléfono.");
+			keyboard.nextLine();
+		}
+	}
+
 	private void mostrarMenuOpciones() {
 		System.out.println("----------------------");
 		System.out.println(OPCION_VER_TODO + " para ver todos los teléfonos");
 		System.out.println(OPCION_BUSCAR_POR_NUMERO + " para buscar por número");
+		System.out.println(OPCION_CREAR + " para crear un teléfono");
+		System.out.println(OPCION_EDITAR + " para editar un teléfono");
+		System.out.println(OPCION_ELIMINAR + " para eliminar un teléfono");
 		System.out.println(OPCION_TELEFONOS_POR_PERSONA + " para ver teléfonos de una persona");
 		System.out.println(OPCION_TELEFONOS_POR_OPERADOR + " para ver teléfonos por operador");
 		System.out.println(OPCION_CONTAR_TELEFONOS + " para contar teléfonos");
