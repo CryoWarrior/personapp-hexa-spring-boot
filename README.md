@@ -67,6 +67,14 @@ curl -X POST http://localhost:3000/api/v1/persona \
   -H "Content-Type: application/json" \
   -d '{"dni":"1001","firstName":"Juan","lastName":"Perez","age":"30","sex":"MALE","database":"MARIA"}'
 ```
+### Documentación OpenAPI (Swagger 3)
+
+La API REST expone la especificación y la UI interactiva gracias a `springdoc-openapi-ui`:
+
+- JSON: `http://localhost:3000/api-docs`
+- Swagger UI: `http://localhost:3000/swagger-ui/index.html`
+
+Desde allí puedes explorar los endpoints `/api/v1/persona` y probarlos directamente.
 
 ### CLI
 
