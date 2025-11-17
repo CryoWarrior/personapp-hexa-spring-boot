@@ -20,7 +20,7 @@ public class ProfesionDocument {
 	private Integer id;
 	private String nom;
 	private String des;
-	@DocumentReference(lazy = true, lookup = "{ 'primaryProfesion' : ?#{#self._id} }")
+	@DocumentReference(lazy = true, lookup = "{ 'primaryProfesion.$id' : ?#{#self._id} }")
 	@ReadOnlyProperty
 	private List<EstudiosDocument> estudios;
 }

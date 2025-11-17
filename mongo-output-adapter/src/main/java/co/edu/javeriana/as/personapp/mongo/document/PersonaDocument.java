@@ -22,10 +22,10 @@ public class PersonaDocument {
 	private String apellido;
 	private String genero;
 	private Integer edad;
-	@DocumentReference(lazy = true, lookup = "{ 'primaryDuenio' : ?#{#self._id} }")
+	@DocumentReference(lazy = true, lookup = "{ 'primaryDuenio.$id' : ?#{#self._id} }")
 	@ReadOnlyProperty
 	private List<TelefonoDocument> telefonos;
-	@DocumentReference(lazy = true, lookup = "{ 'primaryPersona' : ?#{#self._id} }")
+	@DocumentReference(lazy = true, lookup = "{ 'primaryPersona.$id' : ?#{#self._id} }")
 	@ReadOnlyProperty
 	private List<EstudiosDocument> estudios;
 }
