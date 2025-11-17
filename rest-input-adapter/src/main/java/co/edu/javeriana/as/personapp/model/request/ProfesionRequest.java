@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PhoneRequest {
-	private String number;
-	private String company;
-	private String ownerId;     
-	private String database;     
+public class ProfesionRequest {
+	private String id;
+	private String name;
+	private String description;
+	private String database;
 }
+
