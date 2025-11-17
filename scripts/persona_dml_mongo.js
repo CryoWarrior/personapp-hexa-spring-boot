@@ -1,6 +1,7 @@
-use prueba_db
+const personaDb = db.getSiblingDB("persona_db");
 
-db.persona.insertMany([
+// Insertar datos de personas
+personaDb.persona.insertMany([
 	{
 		"_id": NumberInt(123456789),
 		"nombre": "Pepe",

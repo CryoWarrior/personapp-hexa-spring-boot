@@ -1,0 +1,68 @@
+version: "3.9"
+
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: personapp-mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: persona_db
+      MYSQL_DATABASE: persona_db
+      MYSQL_USER: persona_db
+      MYSQL_PASSWORD: persona_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./scripts/persona_ddl_maria.sql:/docker-entrypoint-initdb.d/1_schema.sql:ro
+      - ./scripts/persona_dml_maria.sql:/docker-entrypoint-initdb.d/2_data.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ppersona_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongodb:
+    image: mongo:6.0
+    container_name: personapp-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_DATABASE: persona_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./scripts/persona_ddl_mongo.js:/docker-entrypoint-initdb.d/1_schema.js:ro
+      - ./scripts/persona_dml_mongo.js:/docker-entrypoint-initdb.d/2_data.js:ro
+
+  rest-api:
+    build:
+      context: .
+      dockerfile: rest-input-adapter/Dockerfile
+    container_name: personapp-rest
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+    ports:
+      - "3000:3000"
+
+  cli:
+    build:
+      context: .
+      dockerfile: cli-input-adapter/Dockerfile
+    container_name: personapp-cli
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+    # Normalmente se ejecuta de forma interactiva:
+    # docker compose run --rm cli
+
+volumes:
+  mariadb_data:
+  mongodb_data:
+
+
