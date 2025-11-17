@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class PhoneRequest {
 	private String number;
 	private String company;
-	private String ownerId;      // ID del propietario como String
-	private String database;     // Base de datos a usar ("MARIA"/"MONGO")
+	private String ownerId;     
+	private String database;     
 }
