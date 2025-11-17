@@ -45,29 +45,8 @@ Servicios:
 - OpenAPI docs: `http://localhost:3000/api-docs`
 - MariaDB: `localhost:3307` (`persona_db` / `persona_db`)
 - MongoDB: `localhost:27017` (usuario `persona_db` / `persona_db`, auth DB `admin`)
-
-### Endpoints REST disponibles
-
-| Método | Ruta                         | Descripción                                                    |
-| ------ | ---------------------------- | -------------------------------------------------------------- |
-| GET    | `/api/v1/persona/{database}` | Lista personas desde `MARIA` o `MONGO` (parámetro en la ruta). |
-| POST   | `/api/v1/persona`            | Crea una persona en la base indicada en el body (`database`).  |
-
-Ejemplos:
-
-```bash
-# Listar desde MariaDB
-curl http://localhost:3000/api/v1/persona/maria
-
-# Listar desde MongoDB
-curl http://localhost:3000/api/v1/persona/mongo
-
-# Crear una persona en MariaDB
-curl -X POST http://localhost:3000/api/v1/persona \
-  -H "Content-Type: application/json" \
-  -d '{"dni":"1001","firstName":"Juan","lastName":"Perez","age":"30","sex":"MALE","database":"MARIA"}'
-```
-### Documentación OpenAPI (Swagger 3)
+ 
+### Endpoints REST disponibles - (Swagger 3)
 
 La API REST expone la especificación y la UI interactiva gracias a `springdoc-openapi-ui`:
 
