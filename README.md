@@ -39,12 +39,15 @@ docker compose ps
 docker compose logs rest-api -f
 ```
 
-Servicios:
+## Servicios disponibles
 
-- REST API: `http://localhost:3000`
-- OpenAPI docs: `http://localhost:3000/api-docs`
-- MariaDB: `localhost:3307` (`persona_db` / `persona_db`)
-- MongoDB: `localhost:27017` (usuario `persona_db` / `persona_db`, auth DB `admin`)
+| Servicio     | Puerto | Descripción                       |
+|--------------|--------|-----------------------------------|
+| REST API     | 3000   | Endpoints CRUD de MR              |
+| Swagger UI   | 3000   | Documentación interactiva         |
+| MariaDB      | 3307   | Base de datos relacional          |
+| MongoDB      | 27017  | Base NoSQL con autenticación      |
+| CLI          | n/a    | Aplicación interactiva en terminal |
  
 ### Endpoints REST disponibles - (Swagger 3)
 
@@ -53,7 +56,15 @@ La API REST expone la especificación y la UI interactiva gracias a `springdoc-o
 - JSON: `http://localhost:3000/api-docs`
 - Swagger UI: `http://localhost:3000/swagger-ui/index.html`
 
-Desde allí puedes explorar los endpoints `/api/v1/persona` y probarlos directamente.
+Desde allí puedes explorar los endpoints y probarlos directamente.
+
+Endpoints principales:
+
+- POST: /api/v1/mr
+- GET: /api/v1/mr
+- GET: /api/v1/mr/{id}
+- PUT: /api/v1/mr/{id}
+- DELETE: /api/v1/mr/{id}
 
 ### CLI
 
